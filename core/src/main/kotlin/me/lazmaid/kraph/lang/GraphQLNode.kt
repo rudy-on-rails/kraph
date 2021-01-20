@@ -27,7 +27,7 @@ internal abstract class GraphQLNode {
     @Suppress("UNCHECKED_CAST")
     private fun convertToDataEntry(value: Any?) =
             when(value) {
-                is String   -> DataEntry.StringData(value)
+                is String   -> DataEntry.StringData(value.escapeQuotes())
                 is Int      -> DataEntry.NonDecimalNumberData(value.toLong())
                 is Long     -> DataEntry.NonDecimalNumberData(value)
                 is Float    -> DataEntry.DecimalNumberData(value.toDouble())
@@ -41,6 +41,10 @@ internal abstract class GraphQLNode {
                 else        -> throw RuntimeException("Unsupported Type: $value")
             }
 }
+
+internal fun String.escapeQuotes() =
+    this.replace("\\s+".toRegex(), " ")
+        .replace("\"", "\\\\\\\"")
 
 internal fun String.wrappedWithQuotes(shouldBeEscaped: Boolean) =
         if (shouldBeEscaped) {

@@ -322,6 +322,21 @@ class BuilderSpek : Spek({
                 }
             }
         }
+
+        given("sample mutation with unescaped characters") {
+            val query = Kraph {
+                mutation {
+                    field("someField",
+                        args = mapOf(
+                            "foo" to "some \"bar\" over"
+                        )
+                    )
+                }
+            }
+            it("should escape those characters") {
+                assertThat(query.toRequestString(), equalTo("{\"query\": \"mutation { someField (foo: \\\"some \\\\\\\"bar\\\\\\\" over\\\") }\", \"variables\": null, \"operationName\": null}"))
+            }
+        }
     }
 })
 
