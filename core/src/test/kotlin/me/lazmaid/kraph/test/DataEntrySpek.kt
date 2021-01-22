@@ -6,11 +6,10 @@ import me.lazmaid.kraph.lang.DataEntry
 import me.lazmaid.kraph.lang.PrintFormat
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 
 class DataEntrySpek : Spek({
-    data class Expectation(val normal: String, val pretty: String, val json: String)
+    data class Expectation(val normal: String?, val pretty: String?, val json: String?)
     val tests = listOf(
         Pair(DataEntry.NonDecimalNumberData(5), Expectation("5", "5", "5")),
         Pair(DataEntry.DecimalNumberData(5.0), Expectation("5.0", "5.0", "5.0")),
@@ -28,7 +27,8 @@ class DataEntrySpek : Spek({
                 "{name: \\\"John Doe\\\", age: 18}"
             )
         ),
-        Pair(DataEntry.EnumData(Type.SHORT), Expectation("SHORT", "SHORT", "SHORT"))
+        Pair(DataEntry.EnumData(Type.SHORT), Expectation("SHORT", "SHORT", "SHORT")),
+        Pair(DataEntry.Null, Expectation(null, null, null))
     )
     for((node, expectation) in tests) {
         describe("${node::class.simpleName}") {

@@ -8,7 +8,7 @@ import me.lazmaid.kraph.types.KraphVariableType
  */
 
 internal sealed class DataEntry {
-    abstract fun print(format: PrintFormat): String
+    abstract fun print(format: PrintFormat): String?
 
     class NonDecimalNumberData(private val value: Long) : DataEntry() {
         constructor(value: Int) : this(value.toLong())
@@ -43,7 +43,7 @@ internal sealed class DataEntry {
 
     class ArrayData(private val values: List<DataEntry>) : DataEntry() {
         override fun print(format: PrintFormat) =
-            "[${ values.joinToString(", ") { it.print(format) } }]"
+            "[${ values.joinToString(", ") { it.print(format).orEmpty() } }]"
     }
 
     class ObjectData(private val values: List<Pair<String, DataEntry>>) : DataEntry() {
@@ -55,5 +55,12 @@ internal sealed class DataEntry {
 
     class EnumData(private val value: Enum<*>): DataEntry() {
         override fun print(format: PrintFormat): String = value.name
+    }
+
+    object Null : DataEntry() {
+        override fun print(format: PrintFormat): String? {
+            return null
+        }
+
     }
 }

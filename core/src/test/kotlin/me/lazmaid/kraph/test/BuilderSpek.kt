@@ -337,6 +337,24 @@ class BuilderSpek : Spek({
                 assertThat(query.toRequestString(), equalTo("{\"query\": \"mutation { someField (foo: \\\"some \\\\\\\"bar\\\\\\\" over\\\") }\", \"variables\": null, \"operationName\": null}"))
             }
         }
+
+        given("sample mutation with null value") {
+            val query = Kraph {
+                mutation {
+                    field("someField",
+                        args = mapOf(
+                            "foo" to listOf(
+                                mapOf("a" to null)
+                            )
+                        )
+                    )
+                }
+            }
+
+            it("should escape those characters") {
+                assertThat(query.toRequestString(), equalTo("{\"query\": \"mutation { someField (foo: [{a: null}]) }\", \"variables\": null, \"operationName\": null}"))
+            }
+        }
     }
 })
 
